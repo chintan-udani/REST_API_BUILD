@@ -1,0 +1,109 @@
+TO initialize node as backend 
+npm init -y //in project folder terminal
+//It will create empty package.json
+
+
+Now observe package.json file there we will find the index.js as main which is actually our starting point for node application...
+
+
+Install express using --    npm install --save express
+//this will also create node_modules folder
+
+Steps for index.js :-
+1. -> import express from 'express';     //This will actually import expresspackage 
+2. -> In package.json under main adding type:module, will allow us to use new syntax of importing packages
+3. -> import bodyparser will allow us to take incoming post request
+
+4. -> Initialize express app in any onst var, check index for same!
+5. -> SET port
+6. -> Initialize middleware of body parser app.use(bodyparser.json()) //You will use json data throughout your application
+
+7 -> To avoid reloading after making changes install nodemon
+npm install --save-dev nodemon //dev because end users wont use terminal
+//modify the scripts to : "start": "nodemon index.js" 
+
+
+8. -> app.get('/', (req, res) => {
+    console.log('[TEST]');
+
+    res.send('Hello From Homepage');
+}); //add routes like this to test homepage
+
+
+
+-----------------
+Creating routes which will help us perform crud operations
+
+create a new folder named routes. We meant to create api for users so we created users.js here in this changes
+
+1. -> import express from 'express'; //importing express
+2. -> initiliaze router in constant var
+3.create a req,res function router.get('/', (req, res) => {
+    res.send("Users");
+});
+
+export default router;
+
+-> no go to index.js and import router from routes and app.use(/users, router) add it .
+
+-> Now we will create a mock representation of our users schema.
+Create a user json and enter some data
+
+in users file create a new array and enter data of json file and console log it.
+
+-> We need to send some data from frontend to server and hence we will create a post request
+
+-> We can only get data in browser and post data viewing requires postman.
+
+-> Change to post request then Go to postman, then go to body tab. Select raw and text type to json {
+    "firstName": "John",
+    "lastName": "Doe",
+    "age": 25
+}
+
+
+-> Now go to postman and send the request and observe the response.
+router.post('/', (req, res) => {
+    console.log('Post route reached');
+    res.send("Post route reached");
+
+}); //add this to users.js
+
+ const user = req.body;
+    users.push(user);
+    res.send(`User with the name ${user.firstName} has been added`);
+
+    Putting this on post request will actually add one more copy of whole data of John to json
+
+    --> NPM has package name uuid to serve unique id to every user
+    check syntax from npm docs and also check the user.js here where spreading function is used
+
+    users.push({ ...user, id: uuidv4() });
+
+    It means we get all data of users at once and then we will add id to it.
+
+
+    router.get('/:id', (req, res) => {
+    const { id } = req.params;
+   const findUser =users.find((user) => user.id === id);
+    res.send(findUser);
+});
+
+this above router will return the user with the id which is passed in the url.
+
+
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+
+    users = users.filter((user) => user.id !== id);
+    res.send(`User with the id ${id} has been deleted`);
+
+})
+this above router will delete the user with the id which is passed in the url.
+
+
+
+
+For updating a user we will use patch.
+There is also a put method which will replace the entire user with the new one.
+
